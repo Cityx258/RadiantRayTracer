@@ -1,0 +1,40 @@
+package Radiant;
+
+import projection.Perspective;
+import projection.Projection;
+import sampling.RegularSample;
+import sampling.Sampler;
+import scene.World;
+import utility.Image;
+import utility.Point3D;
+
+public class Driver {
+
+    public static World world;
+    public static Image image;
+    public static Tracer tracer;
+    public static Sampler sampler;
+    public static Projection projection;
+
+    public static void main(String[] args)
+    {
+        long start = System.nanoTime();
+
+        world = new World(1600, 900, 1.0);
+        image = new Image("Image.png");
+        tracer = new Tracer();
+        sampler = new RegularSample(8);
+        projection = new Perspective(new Point3D(-200.0,200.0,600), new Point3D(0.0,0.0,0.0),30);
+
+        for (int y = 0; y < world.viewPlane.height; y++) {
+            for (int x = 0; x < world.viewPlane.width; x++) {
+                tracer.trace(x,y);
+            }
+        }
+        image.write("png");
+        long end = System.nanoTime();
+
+        System.out.println("Loop Time: " + (end-start)/1000000000.0F);
+    }
+
+}
